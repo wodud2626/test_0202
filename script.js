@@ -1,4 +1,4 @@
-// id="wheel"인 canvas 요소를 가져옴 (룰렛 판)
+// id="wheel"인 canvas 요소를 가져옴 (룰렛 판) 변경사항
 const canvas = document.getElementById("wheel");
 
 // canvas에 그림을 그리기 위한 2D 컨텍스트 객체
@@ -32,7 +32,7 @@ const newMake = () => {
       ch, // 중심 y
       cw, // 반지름
       arc * i, // 시작 각도
-      arc * (i + 1) // 끝 각도
+      arc * (i + 1), // 끝 각도
     );
 
     ctx.fill(); // 내부 채우기
@@ -52,7 +52,7 @@ const newMake = () => {
     // 텍스트를 그릴 위치로 이동
     ctx.translate(
       cw + Math.cos(angle) * (cw - 80),
-      ch + Math.sin(angle) * (ch - 80)
+      ch + Math.sin(angle) * (ch - 80),
     );
 
     // 글자가 바깥을 향하도록 회전
