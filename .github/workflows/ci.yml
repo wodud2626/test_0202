@@ -8,6 +8,10 @@ steps:
       node-version: "20"
       cache: "npm"
 
+  - name: Run ESLint
+    # 스크립트가 없어도 에러를 내지 않고 통과합니다.
+    run: npm run lint --if-present
+
   - name: Install dependencies
     # package-lock.json을 기준으로 깔끔하게 설치합니다.
     run: npm ci
