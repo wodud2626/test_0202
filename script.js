@@ -74,6 +74,10 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // 2. 룰렛을 회전시키는 비동기 함수
 const rotate = async () => {
+  if (product.length === 0) {
+    alert("돌림판에 내용이 없습니다! 내용을 추가해주세요.");
+    return;
+  }
   // 회전 중 클릭 방지 (옵션)
   spinBtn.style.pointerEvents = "none";
 
@@ -156,20 +160,13 @@ const reset = () => {
 
 //추가 기능 구현---------------------------------------------------------------------------
 
-// 랜덤 숫자 생성 함수
-function getRandomNumber(min, max) {
-  const randomRGBArray = [];
-  for (let i = 0; i < 3; i++) {
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    randomRGBArray.push(randomNumber);
-  }
-  return randomRGBArray;
-}
-
-//랜덤 숫자를 이용해 나온 RGB값
+// 랜덤 색상 생성 (HSL 사용으로 더 화사하고 예쁜 색상)
 function getRandomColor() {
-  const [r, g, b] = getRandomNumber(0, 255);
-  return `rgb(${r}, ${g}, ${b})`;
+  // 색상(Hue): 0 ~ 360 랜덤
+  // 채도(Saturation): 100% (선명함)
+  // 명도(Lightness): 70% (밝고 화사함)
+  const h = Math.floor(Math.random() * 360);
+  return `hsl(${h}, 100%, 70%)`;
 }
 
 //엔터를 눌러 input의 이벤트 발생
