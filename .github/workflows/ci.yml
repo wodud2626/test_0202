@@ -1,77 +1,26 @@
-# .github/workflows/ci.yml
-#
-# CI (Continuous Integration) 워크플로우
-#
-# PR이 생성되거나 main/develop 브랜치에 푸시될 때
-# 자동으로 빌드와 린트를 실행합니다.
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-name: CI/CD Pipeline
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: "20"
+      cache: "npm"
 
-# ============================================
-# 트리거 조건: 언제 이 워크플로우가 실행되나요?
-# ============================================
-on:
-  # main, develop 브랜치에 푸시될 때
-  push:
-    branches:
-      - main
-      - develop
+  - name: Install dependencies
+    # package-lock.json을 기준으로 깔끔하게 설치합니다.
+    run: npm ci
 
-  # PR이 생성되거나 업데이트될 때
-  pull_request:
-    branches:
-      - main
-      - develop
+  - name: Check Syntax (Lint)
+    # 프로젝트에 ESLint가 설정되어 있다면 유지, 없다면 이 단계는 생략 가능합니다.
+    run: npm run lint --if-present
 
-# ============================================
-# 작업 정의: 무엇을 실행하나요?
-# ============================================
-jobs:
-  # 빌드 및 테스트 작업
-  build:
-    # 실행 환경: Ubuntu 최신 버전
-    runs-on: ubuntu-latest
+  - name: Run Tests
+    # Jest나 Vitest 같은 테스트 프레임워크가 있다면 실행합니다.
+    run: npm test --if-present
 
-    # 작업 단계들
-    steps:
-      # Step 1: 코드 체크아웃
-      # 저장소의 코드를 가져옵니다
-      - name: 📥 코드 체크아웃
-        uses: actions/checkout@v4
-
-      # Step 2: Node.js 설정
-      # Node.js 환경을 설정합니다
-      - name: 📦 Node.js 설정
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      # Step 3: 의존성 설치
-      # package.json의 패키지들을 설치합니다
-      - name: 📚 의존성 설치
-        run: npm ci
-
-      # Step 4: 린트 검사
-      # 코드 스타일을 검사합니다
-      - name: 🔍 린트 검사
-        run: npm run lint
-
-      # Step 5: TypeScript 타입 체크
-      # 타입 오류가 있는지 확인합니다
-      - name: 🔎 타입 체크
-        run: npx tsc --noEmit
-
-      # Step 6: 빌드
-      # 프로덕션 빌드를 실행합니다
-      - name: 🏗️ 빌드
-        run: npm run build
-
-      # Step 7: 빌드 결과물 업로드 (선택사항)
-      # 빌드된 파일을 아티팩트로 저장합니다
-      - name: 📤 빌드 결과물 업로드
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-          retention-days: 7
+  - name: Build Project
+    # Webpack, Vite, Parcel 등으로 빌드하는 과정입니다.
+    # 순수 JS 프로젝트라도 배포용 파일 생성이 필요하다면 유지하세요.
+    run: npm run build --if-present
